@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 4000;
+const fs = require("fs");
 
 app.use(express.json());
 
@@ -8,53 +9,59 @@ app.get("/", (req, res) => {
   res.send("Hola mundo");
 });
 
-app.get("/saludo", (req, res) => {
-  res.send("Buen dia a todos");
-});
-
-app.get("/query", (req, res) => {
-  const nombre = req.query.nombre;
-  const apellido = req.query.apellido;
+app.get("/archivo/crear", (req, res) => {
+  fs.writeFile("archivo.txt", "Adios mundo", (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Archivo creado");
+    }
+  });
 
   res.json({
-    ok: true,
-    msg: "Informacion encontrada.",
-    data: { nombreUsuario: nombre, apellidoUsuario: apellido },
+    msg: "Archivo creado",
   });
 });
 
-app.get("/body", (req, res) => {
-  const nombre = req.body.nombre;
-  const apellido = req.body.apellido;
-  const edad = req.body.edad;
+app.get("/archivo/leer", (req, res) => {
+  fs.readFile("archivo.txt", "utf8", (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(data);
+    }
+  });
 
   res.json({
-    nombre: nombre,
-    apellido: apellido,
-    edad: edad,
+    msg: "Archivo leido",
   });
 });
 
-app.get("/:id", (req, res) => {
-  const id = req.params.id;
+app.get("/archivo/actualizar", (req, res) => {
+  fs.appendFile("archivo.txt", "\nHola mundo", (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Archivo actualizado");
+    }
+  });
 
   res.json({
-    ok: true,
-    msg: "Informacion obtenida.",
-    data: {
-      id: id,
-      nombre: "Jesus",
-    },
+    msg: "Archivo actualizado",
   });
 });
 
-app.get("/:nombre/:apellido", (req, res) => {
-  const nombreUsuario = req.params.nombre;
-  const apellidoUsuario = req.params.apellido;
+app.get("/archivo/eliminar", (req, res) => {
+  fs.unlink("archivo.txt", (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Archivo eliminado");
+    }
+  });
 
   res.json({
-    NOMBRE: nombreUsuario,
-    APELLIDO: apellidoUsuario,
+    msg: "Archivo eliminado",
   });
 });
 
