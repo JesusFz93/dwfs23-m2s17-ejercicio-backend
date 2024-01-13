@@ -2,44 +2,60 @@ const express = require("express");
 const app = express();
 const PORT = 4000;
 
+const fs = require("fs");
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hola mundo");
 });
 
-// Obtener usuarios
-app.get("/usuarios", (req, res) => {
-  res.json({
-    msg: "Usuarios obtenidos",
+app.get("/archivo", (req, res) => {
+  // const nombre = req.body.nombre;
+  const { nombre } = req.body;
+
+  fs.readFile(nombre, "utf8", (err, data) => {
+    if (err) {
+      // console.log(err);
+      return res.status(400).json({
+        ok: false,
+        msg: "Error al obtener el archivo",
+        data: "",
+      });
+    } else {
+      // console.log(data);
+      return res.json({
+        ok: true,
+        msg: "Archivo leido",
+        data: data,
+      });
+    }
   });
 });
 
-// Obtener usuario
-app.get("/usuarios/:id", (req, res) => {
-  res.json({
-    msg: "Usuario obtenido",
-  });
-});
+app.post("/archivo", (req, res) => {
+  // const nombre = req.body.nombre;
+  // const contenido = req.body.contenido;
 
-// Crear usuario
-app.post("/usuarios", (req, res) => {
-  res.json({
-    msg: "Usuario creado",
-  });
-});
+  const { nombre, contenido } = req.body;
 
-// Actualizar usuario
-app.put("/usuarios/:id", (req, res) => {
-  res.json({
-    msg: "Usuario actualizado",
+  fs.writeFile(nombre, contenido, (err) => {
+    if (err) {
+      // console.log(err);
+      return res.json({
+        ok: true,
+        msg: "Archivo creado",
+        data: "",
+      });
+    } else {
+      // console.log("Archivo creado");
+    }
   });
-});
 
-// Eliminar usuario
-app.delete("/usuarios/:id", (req, res) => {
-  res.json({
-    msg: "Usuario eliminado",
+  return res.json({
+    ok: true,
+    msg: "Archivo creado",
+    data: "",
   });
 });
 
